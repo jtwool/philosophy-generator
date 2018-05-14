@@ -1,6 +1,7 @@
 (ns philosophy-generator.core
   (:gen-class)
-  (:require 
+  (:require
+    [clojure.java.io :as io] 
     [clojure.core.reducers :as reducers]
     [clojure.string :as str])
 )
@@ -44,6 +45,14 @@
   [sentences]
   (frequencies  (reducers/flatten (map sent-token-target sentences)))
 )
+
+(defn write-map
+  "Write a map to a file"
+  [m fp]
+  (with-open [wrtr (io/writer fp)]
+    (doseq
+     [line  (map #(str/join " " %) (seq m))]
+     (.write wrtr (str line "\n")))))
 
 (defn -main
   "I don't do a whole lot ... yet."
