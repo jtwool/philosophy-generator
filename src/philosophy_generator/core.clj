@@ -42,7 +42,7 @@
 (defn sents-to-pairs
   "Turn a sequence of tokenized sentences into a count map"
   [sentences]
-  (map sent-token-target sentences)
+  (frequencies  (reducers/flatten (map sent-token-target sentences)))
 )
 
 (defn -main
