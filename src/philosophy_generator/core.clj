@@ -78,11 +78,21 @@
           []
           (cntmap (str/join "," tkns))))
 
-(defn nextWord
-  "Selects next word from counts and input tokens"
+(defn next-word
+  "Randomly selects next word from counts and input tokens"
   [cntmap tkns]
-  
+  (rand-nth
+    (loop [opts [] ts tkns]
+      (if (zero? (count ts)) opts
+      (recur  (concat opts (word-options cntmap ts))
+              (rest ts))))))
+
+(defn complete-sentence
+  "Finishes a sentence given a starting sequence"
+  [cntmap tkns]
+  (loop [ts tkns 
 )
+
 
 (defn -main
   "I don't do a whole lot ... yet."
