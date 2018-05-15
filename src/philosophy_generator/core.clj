@@ -54,6 +54,36 @@
      [line  (map #(str/join " " %) (seq m))]
      (.write wrtr (str line "\n")))))
 
+(defn read-counts
+  "Read a counts file"
+  [fp]
+  (with-open [rdr (io/reader fp)]
+  (reduce (fn [a b]
+            (let [parts (str/split b #"(=>)|\s")
+                  tkns (first parts)
+                  trgt (nth parts 1)
+                  cnt  (nth parts 2)]
+                (assoc a tkns (conj (get a tkns [])
+                   {:tkns tkns 
+                    :trgt trgt
+                    :cnt (Integer. cnt)}))))
+          {}
+          (line-seq rdr))
+))
+
+(defn word-options
+  "Generates word options from counts and input tokens"
+  [cntmap tkns]
+  (reduce (fn [a b] (concat a (repeat (b :cnt) (b :trgt))))
+          []
+          (cntmap (str/join "," tkns))))
+
+(defn nextWord
+  "Selects next word from counts and input tokens"
+  [cntmap tkns]
+  
+)
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
