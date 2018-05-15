@@ -96,11 +96,26 @@
   (loop [ts tkns snt tkns]
     (let [nw (next-word cntmap (take-last 3 ts))] 
       (if (= nw "^E") (str/join " " snt)
-      (if (> (count snt) 8) (str/join " " snt)
+      (if (> (count snt) 12) (str/join " " snt)
       (recur (take-last 3 (conj ts nw)) (conj snt nw)))))))
 
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (write-map
+    (sents-to-pairs
+      (clean-and-tokenize
+        (slurp (nth args 0))))
+    "./resources/counts.tmp")
+  (let [ph-probs (read-counts "./resources/counts.tmp")]
+    (loop [a nil b 0]
+      (println a)
+      (let [x (read-line)
+            start-tkns (str/split (str/lower-case x) #"\s+")] 
+        (if (= "quit" start-tkns) nil
+        (recur 
+           (complete-sentence ph-probs start-tkns)
+           0)))))
+  (io/delete-file "./resources/counts.tmp")
+)
