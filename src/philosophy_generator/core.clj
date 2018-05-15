@@ -74,24 +74,30 @@
 (defn word-options
   "Generates word options from counts and input tokens"
   [cntmap tkns]
-  (reduce (fn [a b] (concat a (repeat (b :cnt) (b :trgt))))
+  (let [n (count tkns)]
+  (reduce (fn [a b] (concat a (repeat (* n (b :cnt)) (b :trgt))))
           []
-          (cntmap (str/join "," tkns))))
+          (cntmap (str/join "," tkns)))))
 
 (defn next-word
   "Randomly selects next word from counts and input tokens"
   [cntmap tkns]
   (rand-nth
+    (filter (fn [a] (not (some #{a} tkns)))
     (loop [opts [] ts tkns]
-      (if (zero? (count ts)) opts
+      (let [n (count ts)]
+      (if (zero? n) opts
       (recur  (concat opts (word-options cntmap ts))
-              (rest ts))))))
+              (rest ts))))))))
 
 (defn complete-sentence
   "Finishes a sentence given a starting sequence"
   [cntmap tkns]
-  (loop [ts tkns 
-)
+  (loop [ts tkns snt tkns]
+    (let [nw (next-word cntmap (take-last 3 ts))] 
+      (if (= nw "^E") (str/join " " snt)
+      (if (> (count snt) 8) (str/join " " snt)
+      (recur (take-last 3 (conj ts nw)) (conj snt nw)))))))
 
 
 (defn -main
