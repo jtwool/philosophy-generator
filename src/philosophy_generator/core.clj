@@ -110,12 +110,12 @@
     "./resources/counts.tmp")
   (let [ph-probs (read-counts "./resources/counts.tmp")]
     (loop [a nil b 0]
-      (println a)
-      (let [x (read-line)
+      (if (= b 1) (println a))
+      (let [x (do (print ">> ") (flush) (read-line))
             start-tkns (str/split (str/lower-case x) #"\s+")] 
-        (if (= "quit" start-tkns) nil
+        (if (= ["quit"] start-tkns) nil
         (recur 
            (complete-sentence ph-probs start-tkns)
-           0)))))
+           1)))))
   (io/delete-file "./resources/counts.tmp")
 )
