@@ -107,8 +107,8 @@
     (sents-to-pairs
       (clean-and-tokenize
         (slurp (nth args 0))))
-    "./resources/counts.tmp")
-  (let [ph-probs (read-counts "./resources/counts.tmp")]
+    "./counts.tmp")
+  (let [ph-probs (read-counts "./counts.tmp")]
     (loop [a nil b 0]
       (if (= b 1) (println a))
       (let [x (do (print ">> ") (flush) (read-line))
